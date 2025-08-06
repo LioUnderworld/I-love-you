@@ -2,42 +2,167 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Para mi amor</title>
+  <title>Para ti 💖</title>
   <style>
+    /* Fondo estrellado */
     body {
-      background: pink;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      font-family: 'Segoe UI', sans-serif;
       color: white;
       text-align: center;
-      font-family: 'Comic Sans MS', cursive;
-      padding: 40px;
     }
-    h1 {
-      font-size: 3em;
-      animation: latido 1s infinite;
-    }
-    p {
-      font-size: 1.5em;
-    }
-    @keyframes latido {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-    .corazones {
-      position: fixed;
+
+    .stars, .stars2, .stars3 {
+      position: absolute;
       width: 100%;
       height: 100%;
-      pointer-events: none;
-      background-image: url('https://i.imgur.com/YWovM4r.gif');
-      background-repeat: repeat;
-      opacity: 0.2;
+      background: transparent;
+      display: block;
+    }
+
+    .stars {
+      background: transparent url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/media/star.png') repeat;
+      animation: animateStar 100s linear infinite;
+      z-index: -3;
+    }
+
+    .stars2 {
+      background: transparent url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/media/star.png') repeat;
+      animation: animateStar 150s linear infinite;
+      opacity: 0.5;
+      z-index: -2;
+    }
+
+    .stars3 {
+      background: transparent url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/media/star.png') repeat;
+      animation: animateStar 200s linear infinite;
+      opacity: 0.3;
+      z-index: -1;
+    }
+
+    @keyframes animateStar {
+      from {background-position: 0 0;}
+      to {background-position: 10000px 10000px;}
+    }
+
+    #heart-btn {
+      font-size: 60px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      margin-top: 100px;
+      color: pink;
+      transition: transform 0.3s;
+    }
+
+    #heart-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .message {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      opacity: 0;
+      animation: rise 4s linear forwards;
+      white-space: nowrap;
+    }
+
+    @keyframes rise {
+      0% {
+        bottom: 0;
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        bottom: 90%;
+        opacity: 0;
+      }
+    }
+
+    .final-message {
+      display: none;
+      font-size: 28px;
+      margin-top: 40px;
+      padding: 20px;
+      color: #ffc0cb;
+    }
+
+    /* Música */
+    audio {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="corazones"></div>
-  <h1>💖 Hola, mi amor 💖</h1>
-  <p>Solo quería recordarte lo especial que eres para mí.<br>
-  Gracias por existir. Te amo muchísimo ❤️</p>
+  <!-- Fondos estrellados -->
+  <div class="stars"></div>
+  <div class="stars2"></div>
+  <div class="stars3"></div>
+
+  <!-- Botón del corazón -->
+  <button id="heart-btn">💖</button>
+
+  <!-- Mensaje final -->
+  <div class="final-message" id="finalMessage">Eres mi estrella favorita en este cielo infinito ✨💗</div>
+
+  <!-- Audio opcional -->
+  <audio id="music" autoplay loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mp3">
+  </audio>
+
+  <script>
+    const heartBtn = document.getElementById('heart-btn');
+    const finalMessage = document.getElementById('finalMessage');
+
+    const messages = [
+      "Eres muy especial 💕",
+      "Gracias por estar en mi vida 🌙",
+      "Me haces feliz cada día ☀️",
+      "Te pienso mucho 🥰",
+      "Siempre para ti 💌"
+    ];
+
+    let clicked = false;
+
+    heartBtn.addEventListener('click', () => {
+      if (clicked) return;
+      clicked = true;
+      heartBtn.disabled = true;
+      heartBtn.style.opacity = 0.5;
+
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i >= messages.length) {
+          clearInterval(interval);
+          setTimeout(() => {
+            finalMessage.style.display = 'block';
+          }, 1000);
+          return;
+        }
+
+        const msg = document.createElement('div');
+        msg.classList.add('message');
+        msg.textContent = messages[i];
+        document.body.appendChild(msg);
+
+        // Posición aleatoria
+        msg.style.left = `${Math.random() * 80 + 10}%`;
+
+        setTimeout(() => {
+          msg.remove();
+        }, 4000);
+
+        i++;
+      }, 1000);
+    });
+  </script>
 </body>
 </html>
