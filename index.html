@@ -1,76 +1,88 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Para ti 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Fondo estrellado */
-    body {
+    * {
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      background: black;
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-      text-align: center;
+      box-sizing: border-box;
+      font-family: 'Quicksand', sans-serif;
     }
 
-    .stars, .stars2, .stars3 {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      display: block;
+    body {
+      overflow: hidden;
     }
 
     .stars {
-      background: transparent url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/media/star.png') repeat;
-      animation: animateStar 100s linear infinite;
-      z-index: -3;
-    }
-
-    .stars2 {
-      background: transparent url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/media/star.png') repeat;
-      animation: animateStar 150s linear infinite;
-      opacity: 0.5;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.gifer.com/av.gif') repeat;
       z-index: -2;
+      animation: moveStars 60s linear infinite;
     }
 
-    .stars3 {
-      background: transparent url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/media/star.png') repeat;
-      animation: animateStar 200s linear infinite;
-      opacity: 0.3;
-      z-index: -1;
+    @keyframes moveStars {
+      from { background-position: 0 0; }
+      to { background-position: 1000px 1000px; }
     }
 
-    @keyframes animateStar {
-      from {background-position: 0 0;}
-      to {background-position: 10000px 10000px;}
-    }
-
-    #heart-btn {
-      font-size: 60px;
+    .heart-container {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       cursor: pointer;
-      background: none;
-      border: none;
-      margin-top: 100px;
-      color: pink;
-      transition: transform 0.3s;
+      z-index: 10;
     }
 
-    #heart-btn:hover {
-      transform: scale(1.2);
+    .heart {
+      width: 120px;
+      height: 120px;
+      background: red;
+      position: relative;
+      transform: rotate(-45deg);
+      animation: pulse 2s infinite;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      width: 120px;
+      height: 120px;
+      background: red;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .heart::before {
+      top: -60px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: 60px;
+      top: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1) rotate(-45deg); }
+      50% { transform: scale(1.1) rotate(-45deg); }
     }
 
     .message {
       position: absolute;
       bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 20px;
+      width: 100%;
+      text-align: center;
+      color: black;
+      font-size: 1.2em;
       opacity: 0;
-      animation: rise 4s linear forwards;
-      white-space: nowrap;
+      animation: rise 4s forwards;
     }
 
     @keyframes rise {
@@ -82,87 +94,86 @@
         opacity: 1;
       }
       100% {
-        bottom: 90%;
+        bottom: 100%;
         opacity: 0;
       }
     }
 
     .final-message {
-      display: none;
-      font-size: 28px;
-      margin-top: 40px;
-      padding: 20px;
-      color: #ffc0cb;
+      position: absolute;
+      top: 70%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: black;
+      font-family: 'Pacifico', cursive;
+      font-size: 3em;
+      text-align: center;
+      opacity: 0;
+      animation: fadeIn 3s forwards;
+      animation-delay: 5s;
     }
 
-    /* Música */
-    audio {
-      display: none;
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Fondos estrellados -->
+
   <div class="stars"></div>
-  <div class="stars2"></div>
-  <div class="stars3"></div>
 
-  <!-- Botón del corazón -->
-  <button id="heart-btn">💖</button>
+  <div class="heart-container" onclick="startMagic()">
+    <div class="heart"></div>
+  </div>
 
-  <!-- Mensaje final -->
-  <div class="final-message" id="finalMessage">Eres mi estrella favorita en este cielo infinito ✨💗</div>
-
-  <!-- Audio opcional -->
-  <audio id="music" autoplay loop>
-    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mp3">
+  <audio id="bg-music" autoplay loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio 😢
   </audio>
 
-  <script>
-    const heartBtn = document.getElementById('heart-btn');
-    const finalMessage = document.getElementById('finalMessage');
+  <div id="messages"></div>
 
+  <div id="final" class="final-message" style="display: none;">
+    Gracias por existir, eres mi cielo lleno de estrellas ✨❤️
+  </div>
+
+  <script>
     const messages = [
-      "Eres muy especial 💕",
-      "Gracias por estar en mi vida 🌙",
-      "Me haces feliz cada día ☀️",
-      "Te pienso mucho 🥰",
-      "Siempre para ti 💌"
+      "Eres increíble 💕",
+      "Gracias por ser tú 💖",
+      "Cada día contigo es especial 🥰",
+      "Te amo más de lo que las palabras pueden decir 💌",
+      "Eres mi persona favorita 🌙",
+      "Contigo todo es mejor 🌸"
+      "Yo te lana al revez💕"
+      "Contigo vale la pena cada segundo💓"
     ];
 
-    let clicked = false;
+    function createMessage(text) {
+      const msg = document.createElement('div');
+      msg.className = 'message';
+      msg.textContent = text;
+      msg.style.left = Math.random() * 80 + 10 + '%';
+      document.getElementById('messages').appendChild(msg);
+      setTimeout(() => msg.remove(), 4000);
+    }
 
-    heartBtn.addEventListener('click', () => {
-      if (clicked) return;
-      clicked = true;
-      heartBtn.disabled = true;
-      heartBtn.style.opacity = 0.5;
+    function startMagic() {
+      document.querySelector('.heart-container').style.display = 'none';
 
       let i = 0;
       const interval = setInterval(() => {
         if (i >= messages.length) {
           clearInterval(interval);
-          setTimeout(() => {
-            finalMessage.style.display = 'block';
-          }, 1000);
+          document.getElementById('final').style.display = 'block';
           return;
         }
-
-        const msg = document.createElement('div');
-        msg.classList.add('message');
-        msg.textContent = messages[i];
-        document.body.appendChild(msg);
-
-        // Posición aleatoria
-        msg.style.left = `${Math.random() * 80 + 10}%`;
-
-        setTimeout(() => {
-          msg.remove();
-        }, 4000);
-
+        createMessage(messages[i]);
         i++;
       }, 1000);
-    });
+    }
   </script>
 </body>
 </html>
